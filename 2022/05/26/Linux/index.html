@@ -318,8 +318,8 @@
     </a>
   
   
-    <a href="/2022/05/25/test/" id="article-nav-older" class="article-nav-link-wrap">
-      <div class="article-nav-title">疫情快结束</div>
+    <a href="/2022/05/25/hexo-blog/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">hexo_blog</div>
       <i class="icon-circle-right"></i>
     </a>
   
@@ -358,7 +358,17 @@
           </div>
         </div>
       </div>
-      <footer id="footer">
+      
+	<script src='https://unpkg.com/mermaid@7.1.2/dist/mermaid.min.js'></script>
+	<script>
+	  if (window.mermaid) {
+		mermaid.initialize({theme: 'forest'});
+	  }
+	</script>
+  
+  
+
+<footer id="footer">
   <div class="outer">
     <div id="footer-info">
     	<div class="footer-left">
@@ -443,6 +453,10 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
             <input type="checkbox" q-on="click:toggleTag(e)" q-attr="checked:showTags">
           </label>
           <ul class="article-tag-list" q-show="showTags">
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">随笔</a>
+              </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">IOTSEC</a>
