@@ -6,16 +6,28 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <link rel="dns-prefetch" href="http://example.com">
-  <title>Archives: 2022/5 | IOT</title>
+  <title>NRF52_Glitch | IOT</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta property="og:type" content="website">
-<meta property="og:title" content="IOT">
-<meta property="og:url" content="http://example.com/archives/2022/05/index.html">
+  <meta name="description" content="NRF52系列 电压毛刺注入笔记 电压毛刺注入  ​		电压毛刺注入是侧信道攻击的一种手段，主要是控制电压波动，导致处理器发生流程故障  NRF52  ​		NRF52是NORDIC公司的一款蓝牙soc，内核是arm cortex-M4  攻击目的  ​		绕过APPROTECT保护机制，开启芯片的调试接口，最终可以通过jtag读取和修改设备的固件。 调试保护机制用户信息配置寄存器（UICR） 用">
+<meta property="og:type" content="article">
+<meta property="og:title" content="NRF52_Glitch">
+<meta property="og:url" content="http://example.com/2022/05/26/NRF52-Glitch/index.html">
 <meta property="og:site_name" content="IOT">
+<meta property="og:description" content="NRF52系列 电压毛刺注入笔记 电压毛刺注入  ​		电压毛刺注入是侧信道攻击的一种手段，主要是控制电压波动，导致处理器发生流程故障  NRF52  ​		NRF52是NORDIC公司的一款蓝牙soc，内核是arm cortex-M4  攻击目的  ​		绕过APPROTECT保护机制，开启芯片的调试接口，最终可以通过jtag读取和修改设备的固件。 调试保护机制用户信息配置寄存器（UICR） 用">
 <meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/2022/05/26/NRF52-Glitch/1593394493114168.png">
+<meta property="og:image" content="http://example.com/2022/05/26/NRF52-Glitch/image-20211201202514467.png">
+<meta property="og:image" content="http://example.com/2022/05/26/NRF52-Glitch/image-20211201202444326.png">
+<meta property="og:image" content="http://example.com/2022/05/26/NRF52-Glitch/image-20211201204448252.png">
+<meta property="og:image" content="http://example.com/2022/05/26/NRF52-Glitch/image-20211201204304177.png">
+<meta property="og:image" content="http://example.com/2022/05/26/NRF52-Glitch/image-20211201210033434.png">
+<meta property="og:image" content="http://example.com/2022/05/26/NRF52-Glitch/image-20211201210312901.png">
+<meta property="article:published_time" content="2022-05-26T08:13:12.000Z">
+<meta property="article:modified_time" content="2022-05-26T08:20:29.710Z">
 <meta property="article:author" content="Question">
-<meta property="article:tag" content="IOT Sec">
+<meta property="article:tag" content="IOTSEC">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/2022/05/26/NRF52-Glitch/1593394493114168.png">
   
     <link rel="alternative" href="/atom.xml" title="IOT" type="application/atom+xml">
   
@@ -163,36 +175,107 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            
+            <article id="post-NRF52-Glitch" class="article article-type-post " itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
   
+    <h1 class="article-title" itemprop="name">
+      NRF52_Glitch
+    </h1>
   
-    
-    
-      
-      
-      <section class="archives-wrap">
-        <div class="archive-year-wrap">
-          <a href="/archives/2022" class="archive-year">2022</a>
-        </div>
-        <div class="archives">
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2022/05/26/NRF52-Glitch/" class="archive-article-date">
+
+        
+        <a href="/2022/05/26/NRF52-Glitch/" class="archive-article-date">
   	<time datetime="2022-05-26T08:13:12.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-05-26</time>
 </a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2022/05/26/NRF52-Glitch/">NRF52_Glitch</a>
-    </h1>
-  
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="NRF52系列-电压毛刺注入笔记"><a href="#NRF52系列-电压毛刺注入笔记" class="headerlink" title="NRF52系列 电压毛刺注入笔记"></a>NRF52系列 电压毛刺注入笔记</h1><ul>
+<li>电压毛刺注入</li>
+</ul>
+<p>​		电压毛刺注入是侧信道攻击的一种手段，主要是控制电压波动，导致处理器发生流程故障</p>
+<ul>
+<li>NRF52</li>
+</ul>
+<p>​		NRF52是NORDIC公司的一款蓝牙soc，内核是arm cortex-M4</p>
+<ul>
+<li>攻击目的</li>
+</ul>
+<p>​		绕过APPROTECT保护机制，开启芯片的调试接口，最终可以通过jtag读取和修改设备的固件。</p>
+<h2 id="调试保护机制"><a href="#调试保护机制" class="headerlink" title="调试保护机制"></a>调试保护机制</h2><p><strong>用户信息配置寄存器（UICR）</strong></p>
+<p>用户信息配置寄存器（UICR）是用于配置用户特定设置的非易失性存储器（NVM）寄存器。它们被映射为0x10001000。</p>
+<p>APPROTECT属于UICR。必须在地址0x10001208上写入0xFFFFFF00以启用访问端口保护，如下所示：</p>
+<img src="/2022/05/26/NRF52-Glitch/1593394493114168.png" class="" title="image.png">
 
-        <div class="article-info info-on-right">
-          
+
+
+<p>适当的配置寄存器</p>
+<p>然后需要上电复位以应用UICR中存在的新设置。</p>
+<p>根据Nordic的说法，必须先擦除所有RAM和内存闪存，才能禁用APPROTECT安全性。</p>
+<h2 id="vcore-确定"><a href="#vcore-确定" class="headerlink" title="vcore 确定"></a>vcore 确定</h2><img src="/2022/05/26/NRF52-Glitch/image-20211201202514467.png" class="" title="image-20211201202514467">
+
+<img src="/2022/05/26/NRF52-Glitch/image-20211201202444326.png" class="" title="image-20211201202444326">
+
+<h2 id="攻击参数确定"><a href="#攻击参数确定" class="headerlink" title="攻击参数确定"></a>攻击参数确定</h2><h2 id="1-攻击窗口"><a href="#1-攻击窗口" class="headerlink" title="1.攻击窗口"></a>1.攻击窗口</h2><p>由上所述 我们知道nrf52840的调试保护是在启动期间就确定了，我们可以写个简单的gpio程序来判断nrf52840的启动时间范围</p>
+<img src="/2022/05/26/NRF52-Glitch/image-20211201204448252.png" class="" title="image-20211201204448252">
+
+<p>nrfjprog –rbp all</p>
+<p>上面代码就是一个简单的gpio口控制程序，当nrf52840启动成功后把PIN3引脚拉到高电平。</p>
+<img src="/2022/05/26/NRF52-Glitch/image-20211201204304177.png" class="" title="image-20211201204304177">
+
+<p>用示波器进行分析启动延时，红色线是nrf52840的vcc供电，绿色是PIN3的波形，可以看到从主供电开始到PIN3输出高电平持续了1.699ms的时间，我们对芯片的攻击窗口就在这个范围内，当然实际攻击的时候有可能要从0~2ms，因为不能保证每次启动时间都完全一致。</p>
+<h2 id="2-攻击延时"><a href="#2-攻击延时" class="headerlink" title="2.攻击延时"></a>2.攻击延时</h2><h2 id="3-攻击成功判断"><a href="#3-攻击成功判断" class="headerlink" title="3.攻击成功判断"></a>3.攻击成功判断</h2><p>使用自己的固件，对比开启调试保护和未开启调试保护的情况</p>
+<p>3.1 未开启调试保护的状态</p>
+<img src="/2022/05/26/NRF52-Glitch/image-20211201210033434.png" class="" title="image-20211201210033434">
+
+<p>可以看到 直接使用openocd能把整个flash读取出来</p>
+<p>3.2 开启调试保护的状态</p>
+<img src="/2022/05/26/NRF52-Glitch/image-20211201210312901.png" class="" title="image-20211201210312901">
+
+
+
+<h2 id="4-攻击流程"><a href="#4-攻击流程" class="headerlink" title="4 攻击流程"></a>4 攻击流程</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">sequenceDiagram</span><br><span class="line">	participant ChipWhisperer</span><br><span class="line">	participant SWD</span><br><span class="line">	participant NRF52840</span><br><span class="line">	</span><br><span class="line">	ChipWhisperer -&gt;&gt; NRF52840:上电</span><br><span class="line">	NRF52840 -&gt;&gt; ChipWhisperer:中断</span><br><span class="line">	loop offset</span><br><span class="line">		ChipWhisperer -&gt; ChipWhisperer:delay</span><br><span class="line">    end</span><br><span class="line">  </span><br><span class="line">    ChipWhisperer -&gt;&gt; NRF52840:glitch</span><br><span class="line">  </span><br><span class="line">    SWD -&gt;&gt; NRF52840:读取固件</span><br><span class="line">    SWD --&gt;&gt; ChipWhisperer:失败</span><br><span class="line">    </span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<h1 id="遇到的问题"><a href="#遇到的问题" class="headerlink" title="遇到的问题"></a>遇到的问题</h1><h2 id="1触发漂移问题"><a href="#1触发漂移问题" class="headerlink" title="1触发漂移问题"></a>1触发漂移问题</h2><p>第一次触发用了 vcc作为触发源发现 电压注入点来回漂</p>
+<p>后改用vcore作为触发源 基本实现稳定触发</p>
+
+      
+
+      
+        <div class="page-reward">
+          <a href="javascript:;" class="page-reward-btn tooltip-top">
+            <div class="tooltip tooltip-east">
+            <span class="tooltip-item">
+              赏
+            </span>
+            <span class="tooltip-content">
+              <span class="tooltip-text">
+                <span class="tooltip-inner">
+                  <p class="reward-p"><i class="icon icon-quo-left"></i>谢谢你请我吃糖果<i class="icon icon-quo-right"></i></p>
+                  <div class="reward-box">
+                    
+                    
+                  </div>
+                </span>
+              </span>
+            </span>
+          </div>
+          </a>
+        </div>
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
 	<div class="article-tag tagcloud">
 		<i class="icon-price-tags icon"></i>
 		<ul class="article-tag-list">
@@ -204,122 +287,106 @@
 		</ul>
 	</div>
 
-          
+      
 
+      
+
+      
+        
+<div class="share-btn share-icons tooltip-left">
+  <div class="tooltip tooltip-east">
+    <span class="tooltip-item">
+      <a href="javascript:;" class="share-sns share-outer">
+        <i class="icon icon-share"></i>
+      </a>
+    </span>
+    <span class="tooltip-content">
+      <div class="share-wrap">
+        <div class="share-icons">
+          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
+            <i class="icon icon-weibo"></i>
+          </a>
+          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
+            <i class="icon icon-weixin"></i>
+          </a>
+          <a class="qq share-sns" href="javascript:;" data-type="qq">
+            <i class="icon icon-qq"></i>
+          </a>
+          <a class="douban share-sns" href="javascript:;" data-type="douban">
+            <i class="icon icon-douban"></i>
+          </a>
+          <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a>
+          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
+            <i class="icon icon-facebook"></i>
+          </a>
+          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
+            <i class="icon icon-twitter"></i>
+          </a>
+          <a class="google share-sns" href="javascript:;" data-type="google">
+            <i class="icon icon-google"></i>
+          </a>
         </div>
-        <div class="clearfix"></div>
-    </header>
+      </div>
+    </span>
+  </div>
+</div>
+
+<div class="page-modal wx-share js-wx-box">
+    <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <div class="wx-qrcode">
+      <img src="//pan.baidu.com/share/qrcode?url=http://example.com/2022/05/26/NRF52-Glitch/" alt="微信分享二维码">
+    </div>
+</div>
+
+<div class="mask js-mask"></div>
+      
+      <div class="clearfix"></div>
+    </div>
   </div>
 </article>
+
   
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2022/05/26/Linux/" class="archive-article-date">
-  	<time datetime="2022-05-26T08:08:52.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-05-26</time>
-</a>
+<nav id="article-nav">
+  
+  
+    <a href="/2022/05/26/Linux/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">Linux</div>
+      <i class="icon-circle-right"></i>
+    </a>
+  
+</nav>
+
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
         </div>
-    	 
+        
+        
+    </div>
+</aside>
+
+
+
   
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2022/05/26/Linux/">Linux</a>
-    </h1>
+  
   
 
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">Linux</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2022/05/25/test/" class="archive-article-date">
-  	<time datetime="2022-05-25T02:52:40.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-05-25</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2022/05/25/test/">疫情快结束</a>
-    </h1>
   
 
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">IOTSEC</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2022/05/24/%E6%90%AC%E5%AE%B6%E4%BA%86/" class="archive-article-date">
-  	<time datetime="2022-05-24T04:21:19.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-05-24</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2022/05/24/%E6%90%AC%E5%AE%B6%E4%BA%86/">搬家了</a>
-    </h1>
   
 
-        <div class="article-info info-on-right">
-          
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
   
-  
-    </div></section>
-  
-
-    
 
 
           </div>
@@ -342,8 +409,8 @@
 	var yiliaConfig = {
 		mathjax: false,
 		isHome: false,
-		isPost: false,
-		isArchive: true,
+		isPost: true,
+		isArchive: false,
 		isTag: false,
 		isCategory: false,
 		open_in_new: false,

@@ -56,6 +56,10 @@
 			
 				<li><a href="/">主页</a></li>
 	        
+				<li><a href="/tags/IOTSec/">IOTSec</a></li>
+	        
+				<li><a href="/tags/Linux/">Linux</a></li>
+	        
 				<li><a href="/tags/%E9%9A%8F%E7%AC%94/">随笔</a></li>
 	        
 			</ul>
@@ -114,6 +118,10 @@
 			
 				
 			
+				
+			
+				
+			
 			
 			
 			<nav class="header-nav">
@@ -131,12 +139,16 @@
 			</nav>
 
 			<nav class="header-menu js-header-menu">
-				<ul style="width: 50%">
+				<ul style="width: 70%">
 				
 				
-					<li style="width: 50%"><a href="/">主页</a></li>
+					<li style="width: 25%"><a href="/">主页</a></li>
 		        
-					<li style="width: 50%"><a href="/tags/%E9%9A%8F%E7%AC%94/">随笔</a></li>
+					<li style="width: 25%"><a href="/tags/IOTSec/">IOTSec</a></li>
+		        
+					<li style="width: 25%"><a href="/tags/Linux/">Linux</a></li>
+		        
+					<li style="width: 25%"><a href="/tags/%E9%9A%8F%E7%AC%94/">随笔</a></li>
 		        
 				</ul>
 			</nav>
@@ -153,6 +165,209 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-NRF52-Glitch" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2022/05/26/NRF52-Glitch/">NRF52_Glitch</a>
+    </h1>
+  
+
+        
+        <a href="/2022/05/26/NRF52-Glitch/" class="archive-article-date">
+  	<time datetime="2022-05-26T08:13:12.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-05-26</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="NRF52系列-电压毛刺注入笔记"><a href="#NRF52系列-电压毛刺注入笔记" class="headerlink" title="NRF52系列 电压毛刺注入笔记"></a>NRF52系列 电压毛刺注入笔记</h1><ul>
+<li>电压毛刺注入</li>
+</ul>
+<p>​		电压毛刺注入是侧信道攻击的一种手段，主要是控制电压波动，导致处理器发生流程故障</p>
+<ul>
+<li>NRF52</li>
+</ul>
+<p>​		NRF52是NORDIC公司的一款蓝牙soc，内核是arm cortex-M4</p>
+<ul>
+<li>攻击目的</li>
+</ul>
+<p>​		绕过APPROTECT保护机制，开启芯片的调试接口，最终可以通过jtag读取和修改设备的固件。</p>
+<h2 id="调试保护机制"><a href="#调试保护机制" class="headerlink" title="调试保护机制"></a>调试保护机制</h2><p><strong>用户信息配置寄存器（UICR）</strong></p>
+<p>用户信息配置寄存器（UICR）是用于配置用户特定设置的非易失性存储器（NVM）寄存器。它们被映射为0x10001000。</p>
+<p>APPROTECT属于UICR。必须在地址0x10001208上写入0xFFFFFF00以启用访问端口保护，如下所示：</p>
+<img src="/2022/05/26/NRF52-Glitch/1593394493114168.png" class="" title="image.png">
+
+
+
+<p>适当的配置寄存器</p>
+<p>然后需要上电复位以应用UICR中存在的新设置。</p>
+<p>根据Nordic的说法，必须先擦除所有RAM和内存闪存，才能禁用APPROTECT安全性。</p>
+<h2 id="vcore-确定"><a href="#vcore-确定" class="headerlink" title="vcore 确定"></a>vcore 确定</h2><img src="/2022/05/26/NRF52-Glitch/image-20211201202514467.png" class="" title="image-20211201202514467">
+
+<img src="/2022/05/26/NRF52-Glitch/image-20211201202444326.png" class="" title="image-20211201202444326">
+
+<h2 id="攻击参数确定"><a href="#攻击参数确定" class="headerlink" title="攻击参数确定"></a>攻击参数确定</h2><h2 id="1-攻击窗口"><a href="#1-攻击窗口" class="headerlink" title="1.攻击窗口"></a>1.攻击窗口</h2><p>由上所述 我们知道nrf52840的调试保护是在启动期间就确定了，我们可以写个简单的gpio程序来判断nrf52840的启动时间范围</p>
+<img src="/2022/05/26/NRF52-Glitch/image-20211201204448252.png" class="" title="image-20211201204448252">
+
+<p>nrfjprog –rbp all</p>
+<p>上面代码就是一个简单的gpio口控制程序，当nrf52840启动成功后把PIN3引脚拉到高电平。</p>
+<img src="/2022/05/26/NRF52-Glitch/image-20211201204304177.png" class="" title="image-20211201204304177">
+
+<p>用示波器进行分析启动延时，红色线是nrf52840的vcc供电，绿色是PIN3的波形，可以看到从主供电开始到PIN3输出高电平持续了1.699ms的时间，我们对芯片的攻击窗口就在这个范围内，当然实际攻击的时候有可能要从0~2ms，因为不能保证每次启动时间都完全一致。</p>
+<h2 id="2-攻击延时"><a href="#2-攻击延时" class="headerlink" title="2.攻击延时"></a>2.攻击延时</h2><h2 id="3-攻击成功判断"><a href="#3-攻击成功判断" class="headerlink" title="3.攻击成功判断"></a>3.攻击成功判断</h2><p>使用自己的固件，对比开启调试保护和未开启调试保护的情况</p>
+<p>3.1 未开启调试保护的状态</p>
+<img src="/2022/05/26/NRF52-Glitch/image-20211201210033434.png" class="" title="image-20211201210033434">
+
+<p>可以看到 直接使用openocd能把整个flash读取出来</p>
+<p>3.2 开启调试保护的状态</p>
+<img src="/2022/05/26/NRF52-Glitch/image-20211201210312901.png" class="" title="image-20211201210312901">
+
+
+
+<h2 id="4-攻击流程"><a href="#4-攻击流程" class="headerlink" title="4 攻击流程"></a>4 攻击流程</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">sequenceDiagram</span><br><span class="line">	participant ChipWhisperer</span><br><span class="line">	participant SWD</span><br><span class="line">	participant NRF52840</span><br><span class="line">	</span><br><span class="line">	ChipWhisperer -&gt;&gt; NRF52840:上电</span><br><span class="line">	NRF52840 -&gt;&gt; ChipWhisperer:中断</span><br><span class="line">	loop offset</span><br><span class="line">		ChipWhisperer -&gt; ChipWhisperer:delay</span><br><span class="line">    end</span><br><span class="line">  </span><br><span class="line">    ChipWhisperer -&gt;&gt; NRF52840:glitch</span><br><span class="line">  </span><br><span class="line">    SWD -&gt;&gt; NRF52840:读取固件</span><br><span class="line">    SWD --&gt;&gt; ChipWhisperer:失败</span><br><span class="line">    </span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<h1 id="遇到的问题"><a href="#遇到的问题" class="headerlink" title="遇到的问题"></a>遇到的问题</h1><h2 id="1触发漂移问题"><a href="#1触发漂移问题" class="headerlink" title="1触发漂移问题"></a>1触发漂移问题</h2><p>第一次触发用了 vcc作为触发源发现 电压注入点来回漂</p>
+<p>后改用vcore作为触发源 基本实现稳定触发</p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">IOTSEC</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2022/05/26/NRF52-Glitch/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-Linux" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2022/05/26/Linux/">Linux</a>
+    </h1>
+  
+
+        
+        <a href="/2022/05/26/Linux/" class="archive-article-date">
+  	<time datetime="2022-05-26T08:08:52.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-05-26</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="这里记录下日常学习的一点东西"><a href="#这里记录下日常学习的一点东西" class="headerlink" title="这里记录下日常学习的一点东西"></a>这里记录下日常学习的一点东西</h1>
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+        <div class="article-pop-out tagcloud">
+          <i class="icon-tuding"></i>
+          <a class="article-tag-list-link color3">置顶</a>
+        </div>
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">Linux</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2022/05/26/Linux/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-test" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -160,7 +375,7 @@
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2022/05/25/test/">快结束</a>
+      <a class="article-title" href="/2022/05/25/test/">疫情快结束</a>
     </h1>
   
 
@@ -182,6 +397,17 @@
     <div class="article-info article-info-index">
       
       
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">IOTSEC</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
       
 
       
@@ -371,6 +597,14 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
             <input type="checkbox" q-on="click:toggleTag(e)" q-attr="checked:showTags">
           </label>
           <ul class="article-tag-list" q-show="showTags">
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">Linux</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">IOTSEC</a>
+              </li>
             
             <div class="clearfix"></div>
           </ul>
